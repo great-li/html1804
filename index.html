@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			* {
+				margin: 0px;
+				padding: 0px;
+			}
+			
+			div {
+				background: blue;
+				width: 100px;
+				height: 100px;
+				position: absolute;
+				opacity: 0.3;
+			}
+			
+			span {
+				width: 1px;
+				height: 500px;
+				background: #000000;
+				position: absolute;
+				left: 600px;
+				top: 0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div>
+
+		</div>
+		<span></span>
+		<script type="text/javascript">
+			//1:基本缓冲运动面向对象：离目标点近，速度慢
+			/*function Buffermove(){
+				this.timer=null
+				this.speed=null
+				this.oBox=document.querySelector('div')
+				var that=this
+				this.oBox.onclick=function(){
+					clearInterval(that.timer)
+					setInterval(function(){
+						that.speed=(600-that.oBox.offsetLeft)/10 //速度越来越慢
+						that.speed=that.speed>0?Math.ceil(that.speed):Math.floor(that.speed);
+						//判断停止
+						if(that.oBox.left==600){
+							clearInterval(that.timer)
+						}
+						that.oBox.style.left=that.oBox.offsetLeft+that.speed+'px'
+					},20)
+				}
+			}
+			
+			
+		new Buffermove().onclick()*/
+
+			//2:任意属性：面向对象的写法
+			//任意属性：透明度比较特殊:标准浏览器要四舍五入取整，并扩大100倍；IE浏览器取整即可
+			var obox = document.querySelector('div')
+
+			function getstyle(obj, arry) {
+				if(window.getComputedStyle) {
+					return getComputedStyle(obj)[arry]
+				} else {
+					return obj.currentStyle[arry]
+				}
+			}
+			/*var timer=null;
+			function buffermove(obj,attr,target){//obj:操作的元素    attr:属性     target:目标
+				var speed=0;
+				clearInterval(timer);
+				timer=setInterval(function(){
+					//求当前值(任意的css属性值)
+					var currentvalue=0;
+					if(attr==='opacity'){
+						currentvalue=Math.round(getstyle(obj,attr)*100); //取值扩大100倍，目标点扩大100倍
+					}else{
+						currentvalue=parseInt(getstyle(obj,attr));
+					}
+					//求速度
+					//透明度的时候：目标点扩大100倍
+					speed=(target-currentvalue)/10;   
+					speed=speed>0?Math.ceil(speed):Math.floor(speed);
+					//判断停止
+					if(currentvalue==target){
+						clearInterval(timer);
+					}else{
+						if(attr==='opacity'){
+							//标准的输出
+							obj.style.opacity=(currentvalue+speed)/100;   
+							obj.style.filter='alpha(opacity:'+(currentvalue+speed)+')';     //IE的输出
+						}else{
+							obj.style[attr]=currentvalue+speed+'px';
+						}
+						
+					}
+					
+				},30);
+			}*/
+			/*	
+				obox.onmousemove=function(){
+				
+				buffermove(obox,'opacity',100)
+				}*/
+			var timer = null
+
+			function buffmove(obj, atty, traget, fn) { //核心：回调函数
+				var speed = 0
+				var nowvalue = 0
+				obj.onclick = function() {
+					clearInterval(timer)
+					setInterval(function() {
+						if(atty === 'opacity') {
+							nowvalue = Math.round(getstyle(obj, atty) * 100);
+						} else {
+							nowvalue = Math.parseInt(getstyle(obj.atty));
+						}
+						//求速度
+						speed = (traget - nowvalue) / 10
+						speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+						//判断停止
+						if(nowvalue == traget) {
+							clearInterval(timer)
+							fn&&fn()//再次判断是否有回调函数，如果有继续调用                                                                          
+						}else{
+							if(atty==='opacity'){
+								obj.style.opacity=(currentvalue+speed)/100;   
+								obj.style.filter='alpha(opacity:'+(currentvalue+speed)+')';
+							}else{
+								obj.style[atty]=nowvalue+speed+'px'
+							}
+						}
+
+					}, 30)
+
+				}
+
+			}
+			
+			buffermove(obox,'width',500,function(){
+				buffermove(obox,'height',800)
+			})
+			
+		</script>
+	</body>
+
+</html>
